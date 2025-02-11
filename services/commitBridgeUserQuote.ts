@@ -1,0 +1,29 @@
+import 'dotenv/config'
+
+const {API_URL} = process.env
+
+/**
+ * Commits a bridge user quote to the server.
+ *
+ * @param {string} address - The user's evm address.
+ * @param {string} quoteId - The quote id to commit.
+ * @param {string} jwt - The JSON Web Token for authorization.
+ * @returns {Promise<Object>} The response from the server.
+ * @throws Will throw an error if the request fails.
+ */
+export const commitBridgeUserQuote = async (address: string, quoteId: string, jwt: string) => {
+  try {
+    const request = await fetch(`${API_URL}/bridge/quote/commit/${quoteId}/${address}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': jwt,
+      },
+    })
+
+    return await request.json()
+  } catch (error) {
+    console.error(error)
+    throw new Error('Failed to commit bridge user quote.')
+  }
+}
