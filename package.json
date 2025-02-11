@@ -1,0 +1,9 @@
+{
+  "name": "bridge-examples",
+  "version": "1.0.0",
+  "description": "Bridge API integration examples",
+  "main": "index.js",
+  "repository": "https://github.com/rhinofi/bridge-examples.git",
+  "author": "rhinofi",
+  "license": "MIT"
+}
