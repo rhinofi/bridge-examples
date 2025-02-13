@@ -17,17 +17,17 @@ type BridgeUserQuotePayload = {
  *
  * @param {string} address - The user's wallet address.
  * @param {BridgeUserQuotePayload} payload - The payload containing quote details.
- * @param {string} jwt - The JSON Web Token for authorization.
+ * @param {string} apiKey - The rhino api key for authorization.
  * @returns {Promise<Object>} The response from the server containing the quote.
  * @throws Will throw an error if the request fails.
  */
 // https://api.rhino.fi/bridge/docs - see docs for the response schema
-export const getBridgeUserQuote = async (address: string, payload: BridgeUserQuotePayload, jwt: string) => {
+export const getBridgeUserQuote = async (address: string, payload: BridgeUserQuotePayload, apiKey: string) => {
   try {
     const request = await fetch(`${API_URL}/bridge/quote/user/${address.toLowerCase()}`, {
       headers: {
         "content-type": "application/json",
-        "authorization": jwt
+        "authorization": apiKey
       },
       method: "POST",
       body: JSON.stringify(payload)

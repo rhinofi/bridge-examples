@@ -22,14 +22,11 @@ Signing in on ${createdAt.toUTCString()}. For your safety, only sign this messag
 
 /**
  * Authenticates the user by signing a message with their evm wallet and sending the signature to the server, returns a
- * jwt token if successful to be used in subsequent requests.
+ * temporary api key if successful to be used in subsequent requests.
+ *  Only use this method if you have not received a personal api key from rhino.
  *
  * @param wallet
- * @returns {Promise<{
- *   jwt: string
- *   userId: string
- *   ethAddress: string
- * }>} The response from the authentication server.
+ * @returns {string} The api key from the authentication server.
  * @throws Will throw an error if authentication fails.
  */
 export const authenticate = async (wallet: Wallet) => {
@@ -48,7 +45,7 @@ export const authenticate = async (wallet: Wallet) => {
         createdAt
       })
     })
-    return await request.json()
+    return request.json().then(data => data.jwt as string)
   } catch (error) {
     console.error(error)
     throw new Error('Failed to authenticate')
