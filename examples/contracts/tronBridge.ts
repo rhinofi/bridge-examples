@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import {tronAbi} from "../../helpers/tron/tronAbi";
 import {BridgeContractCallProps} from "../../types/types";
 import {getTronWallet} from "../../helpers/tron/getTronWallet";

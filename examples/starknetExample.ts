@@ -4,25 +4,26 @@ import {authenticate} from "../services/authentication";
 import {getBridgeUserQuote} from "../services/getBridgeUserQuote";
 import {getBridgeConfigs} from "../services/getConfigs";
 import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
-import {callTonBridgeContract} from "./contracts/tonBridge";
-import {getTonWallet} from "../helpers/ton/getTonWallet";
-import {toUserFriendlyAddress} from "@tonconnect/sdk";
+import {callStarknetBridgeContract} from "./contracts/starknetBridge";
 
-const {EVM_PRIVATE_KEY, RECIPIENT} = process.env
+const {EVM_PRIVATE_KEY, RECIPIENT, STARKNET_WALLET_ADDRESS} = process.env
 
 const wallet = new ethers.Wallet(EVM_PRIVATE_KEY)
 
-const amount = '3'
-const chainIn = 'TON'
+const amount = '0.0005'
+const chainIn = 'STARKNET'
 const chainOut = 'SCROLL'
-const token = 'USDT'
-const isTestnet = true
+const token = 'ETH'
 
-const tonBridge = async () => {
-  const { wallet: tonWallet } = await getTonWallet()
-  const tonWalletAddress = toUserFriendlyAddress(tonWallet.address.toRawString(), isTestnet)
+const starknetBridge = async () => {
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
+
+  const starknetWalletAddress = STARKNET_WALLET_ADDRESS
+
+  if (!starknetWalletAddress) {
+    throw new Error('Failed to get Tron wallet address.')
+  }
 
   // Authenticate the user with their wallet and get a jwt token
   const { jwt } = await authenticate(wallet)
@@ -34,7 +35,7 @@ const tonBridge = async () => {
     chainOut,
     token,
     mode: 'receive',
-    depositor: tonWalletAddress,
+    depositor: starknetWalletAddress,
     recipient: RECIPIENT,
   }, jwt)
 
@@ -45,14 +46,13 @@ const tonBridge = async () => {
 
   const chainConfig = configs[chainIn]
 
-  await callTonBridgeContract({
+  callStarknetBridgeContract({
     chainConfig,
     amount: quote.payAmount,
     token,
     commitmentId: commitResult.quoteId,
-    tonWalletAddress: tonWalletAddress,
     callback: (hash) => console.info('Transaction hash:', hash)
   })
 }
 
-tonBridge()
+starknetBridge()

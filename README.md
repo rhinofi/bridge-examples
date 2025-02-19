@@ -49,4 +49,3 @@ To run the examples, use the following commands:
 ### Running examples
 
 Each example script demonstrates how to interact with the rhino.fi bridge API for different blockchain networks. Ensure you have populated the `.env` file with the required environment variables before running any example.
-```
