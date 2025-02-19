@@ -7,17 +7,17 @@ const {API_URL} = process.env
  *
  * @param {string} address - The user's evm address.
  * @param {string} quoteId - The quote id to commit.
- * @param {string} jwt - The JSON Web Token for authorization.
+ * @param {string} apiKey - The rhino api key for authorization.
  * @returns {Promise<Object>} The response from the server.
  * @throws Will throw an error if the request fails.
  */
-export const commitBridgeUserQuote = async (address: string, quoteId: string, jwt: string) => {
+export const commitBridgeUserQuote = async (address: string, quoteId: string, apiKey: string) => {
   try {
     const request = await fetch(`${API_URL}/bridge/quote/commit/${quoteId}/${address}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'authorization': jwt,
+        'authorization': apiKey,
       },
     })
 
