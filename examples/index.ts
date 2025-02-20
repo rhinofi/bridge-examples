@@ -19,7 +19,7 @@ const evmBridge = async () => {
   const configs = await getBridgeConfigs()
 
   // Get a quote for the bridge - use the returned quoteId to commit the transaction
-  const quote = await getBridgeUserQuote(wallet.address, {
+  const quote = await getBridgeUserQuote({
     amount,
     chainIn,
     chainOut,
@@ -34,7 +34,7 @@ const evmBridge = async () => {
     throw new Error('Failed to generate user quote.')
   }
   // Commits the user quote to the server and returns the commitment id for the transaction
-  const commitResult = await commitBridgeUserQuote(wallet.address, quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
 
   if (!commitResult?.quoteId) {
     throw new Error('Failed to commit user quote.')

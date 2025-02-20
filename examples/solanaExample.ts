@@ -1,14 +1,11 @@
 import 'dotenv/config'
-import {ethers} from "ethers";
 import {getBridgeUserQuote} from "../services/getBridgeUserQuote";
 import {getBridgeConfigs} from "../services/getConfigs";
 import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
 import {getSolanaWallet} from "../helpers/solana/getSolanaWallet";
 import {callSolanaBridgeContract} from "./contracts/solanaBridge";
 
-const {EVM_PRIVATE_KEY, RECIPIENT, RHINO_API_KEY} = process.env
-
-const wallet = new ethers.Wallet(EVM_PRIVATE_KEY)
+const { RECIPIENT, RHINO_API_KEY} = process.env
 
 const amount = '3'
 const chainIn = 'SOLANA'
@@ -23,7 +20,7 @@ const solanaBridge = async () => {
   const configs = await getBridgeConfigs()
 
   // Get a quote for the bridge - use the returned quoteId to commit the transaction
-  const quote = await getBridgeUserQuote(wallet.address, {
+  const quote = await getBridgeUserQuote({
     amount,
     chainIn,
     chainOut,
@@ -36,7 +33,7 @@ const solanaBridge = async () => {
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
-  const commitResult = await commitBridgeUserQuote(wallet.address, quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
 
   const chainConfig = configs[chainIn]
 
