@@ -11,7 +11,7 @@ const getHistoryOrStatus = async () => {
   const status = await getBridgeStatus(bridgeId, RHINO_API_KEY)
   console.info('Bridge status:', status)
 
-  // Get the user history
+  // Get the user history -- need to request an API_KEY with history support
   const history = await getBridgeUserHistory(RHINO_API_KEY)
   console.info('User history:', history)
 }
