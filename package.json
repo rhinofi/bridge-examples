@@ -11,7 +11,8 @@
     "ton-example": "npx tsx examples/tonExample.ts",
     "solana-example": "npx tsx examples/solanaExample.ts",
     "tron-example": "npx tsx examples/tronExample.ts",
-    "starknet-example": "npx tsx examples/starknetExample.ts"
+    "starknet-example": "npx tsx examples/starknetExample.ts",
+    "status-example": "npx tsx examples/bridgeStatusExample.ts"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",

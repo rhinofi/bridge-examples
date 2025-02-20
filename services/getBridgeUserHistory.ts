@@ -12,7 +12,13 @@ const {API_URL} = process.env
 // https://api.rhino.fi/bridge/docs - see docs for the response schema
 export const getBridgeUserHistory = async (apiKey: string) => {
   try {
-    const request = await fetch(`${API_URL}/history/user`, {
+    const queryParams = new URLSearchParams({
+      page: '1',
+      limit: '20',
+      sortBy: 'createdAt',
+      sortDirection: 'desc',
+    })
+    const request = await fetch(`${API_URL}/bridge/history/user?${queryParams.toString()}`, {
       headers: {
         "content-type": "application/json",
         "authorization": apiKey

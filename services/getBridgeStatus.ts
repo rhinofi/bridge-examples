@@ -13,7 +13,7 @@ const {API_URL} = process.env
 // https://api.rhino.fi/bridge/docs - see docs for the response schema
 export const getBridgeStatus = async (bridgeId: string, apiKey: string) => {
   try {
-    const request = await fetch(`${API_URL}/history/bridge/${bridgeId}`, {
+    const request = await fetch(`${API_URL}/bridge/history/bridge/${bridgeId}`, {
       headers: {
         "content-type": "application/json",
         "authorization": apiKey
