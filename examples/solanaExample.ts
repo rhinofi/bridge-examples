@@ -4,6 +4,7 @@ import {getBridgeConfigs} from "../services/getConfigs";
 import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
 import {getSolanaWallet} from "../helpers/solana/getSolanaWallet";
 import {callSolanaBridgeContract} from "./contracts/solanaBridge";
+import { authenticateWithApiKey } from '../services/authentication';
 
 const { RECIPIENT, RHINO_API_KEY} = process.env
 
@@ -15,6 +16,8 @@ const token = 'USDT'
 const solanaBridge = async () => {
   const { wallet: solanaWallet } = getSolanaWallet()
   const solanaWalletAddress = solanaWallet.publicKey.toString()
+
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
 
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
@@ -28,12 +31,12 @@ const solanaBridge = async () => {
     mode: 'receive',
     depositor: solanaWalletAddress,
     recipient: RECIPIENT,
-  }, RHINO_API_KEY)
+  }, jwt)
 
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
-  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, jwt)
 
   const chainConfig = configs[chainIn]
 

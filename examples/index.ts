@@ -1,9 +1,10 @@
-import 'dotenv/config'
-import {ethers} from "ethers";
-import {getBridgeUserQuote} from "../services/getBridgeUserQuote";
-import {getBridgeConfigs} from "../services/getConfigs";
-import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
-import {callEvmBridgeContract} from "./contracts/evmBridge";
+import 'dotenv/config';
+import { ethers } from "ethers";
+import { getBridgeUserQuote } from "../services/getBridgeUserQuote";
+import { getBridgeConfigs } from "../services/getConfigs";
+import { commitBridgeUserQuote } from "../services/commitBridgeUserQuote";
+import { callEvmBridgeContract } from "./contracts/evmBridge";
+import { authenticateWithApiKey } from '../services/authentication';
 
 const {EVM_PRIVATE_KEY, RHINO_API_KEY} = process.env
 
@@ -18,6 +19,8 @@ const evmBridge = async () => {
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
 
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
+
   // Get a quote for the bridge - use the returned quoteId to commit the transaction
   const quote = await getBridgeUserQuote({
     amount,
@@ -28,13 +31,13 @@ const evmBridge = async () => {
     depositor: wallet.address,
     recipient: wallet.address,
     amountNative: '0'
-  }, RHINO_API_KEY)
+  }, jwt)
 
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
   // Commits the user quote to the server and returns the commitment id for the transaction
-  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, jwt)
 
   if (!commitResult?.quoteId) {
     throw new Error('Failed to commit user quote.')

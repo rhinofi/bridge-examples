@@ -5,6 +5,7 @@ import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
 import {callTonBridgeContract} from "./contracts/tonBridge";
 import {getTonWallet} from "../helpers/ton/getTonWallet";
 import {toUserFriendlyAddress} from "@tonconnect/sdk";
+import { authenticateWithApiKey } from '../services/authentication';
 
 const { RECIPIENT, RHINO_API_KEY} = process.env
 
@@ -20,6 +21,8 @@ const tonBridge = async () => {
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
 
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
+
   // Get a quote for the bridge - use the returned quoteId to commit the transaction
   const quote = await getBridgeUserQuote({
     amount,
@@ -29,12 +32,12 @@ const tonBridge = async () => {
     mode: 'receive',
     depositor: tonWalletAddress,
     recipient: RECIPIENT,
-  }, RHINO_API_KEY)
+  }, jwt)
 
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
-  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, jwt)
 
   const chainConfig = configs[chainIn]
 

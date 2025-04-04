@@ -3,6 +3,7 @@ import {getBridgeUserQuote} from "../services/getBridgeUserQuote";
 import {getBridgeConfigs} from "../services/getConfigs";
 import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
 import {callStarknetBridgeContract} from "./contracts/starknetBridge";
+import { authenticateWithApiKey } from '../services/authentication';
 
 const { RECIPIENT, STARKNET_WALLET_ADDRESS ,RHINO_API_KEY} = process.env
 
@@ -14,6 +15,8 @@ const token = 'ETH'
 const starknetBridge = async () => {
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
+
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
 
   const starknetWalletAddress = STARKNET_WALLET_ADDRESS
 
@@ -30,12 +33,12 @@ const starknetBridge = async () => {
     mode: 'receive',
     depositor: starknetWalletAddress,
     recipient: RECIPIENT,
-  }, RHINO_API_KEY)
+  }, jwt)
 
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
-  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, jwt)
 
   const chainConfig = configs[chainIn]
 

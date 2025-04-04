@@ -1,5 +1,6 @@
 import {getBridgeUserHistory} from "../services/getBridgeUserHistory";
 import {getBridgeStatus} from "../services/getBridgeStatus";
+import { authenticateWithApiKey } from "../services/authentication";
 
 const {RHINO_API_KEY} = process.env
 
@@ -7,12 +8,13 @@ const {RHINO_API_KEY} = process.env
 const bridgeId = 'your_bridge_id'
 
 const getHistoryOrStatus = async () => {
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
   // Get the user history -- need to request an API_KEY with history support
-  const history = await getBridgeUserHistory(RHINO_API_KEY)
+  const history = await getBridgeUserHistory(jwt)
   console.info('User history:', history)
 
   // Get the status of a bridge by the bridge id
-  const status = await getBridgeStatus(bridgeId, RHINO_API_KEY)
+  const status = await getBridgeStatus(bridgeId, jwt)
   console.info('Bridge status:', status)
 }
 

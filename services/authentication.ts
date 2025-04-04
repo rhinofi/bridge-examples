@@ -26,10 +26,10 @@ Signing in on ${createdAt.toUTCString()}. For your safety, only sign this messag
  *  Only use this method if you have not received a personal api key from rhino.
  *
  * @param wallet
- * @returns {string} The api key from the authentication server.
+ * @returns {string} The JWT from the authentication server.
  * @throws Will throw an error if authentication fails.
  */
-export const authenticate = async (wallet: Wallet) => {
+export const authenticateWithWallet = async (wallet: Wallet) => {
   try {
     const {message, createdAt} = getAuthMessageV3()
     const signature = await wallet.signMessage(message)
@@ -52,3 +52,14 @@ export const authenticate = async (wallet: Wallet) => {
   }
 }
 
+export const authenticateWithApiKey = async (apiKey: string) => {
+  const response = await fetch('https://api.rhino.fi/authentication/auth/apiKey', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ apiKey }),
+  })
+  const { jwt } = await response.json()
+  return jwt
+}
