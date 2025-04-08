@@ -22,7 +22,7 @@ API_URL="https://api.rhino.fi"
 RECIPIENT=recipient_address
 TON_MNEMONIC=your_ton_mnemonic
 SOLANA_PRIVATE_KEY=your_solana_private_key
-RHINO_API_KEY=token_provided_by_rhino
+RHINO_API_KEY=api_key_provided_by_rhino
 ```
 
 ### How to run
@@ -53,5 +53,11 @@ Each example script demonstrates how to interact with the rhino.fi bridge API fo
 
 ### About authentication
 
-The Rhino API requires authentication with an api key to access the bridge. Rhino will provide you a key specific for your app upon request that will not expire and is safe to be exposed in the browser. You should always use this key in your production integration.  
-If you want to try out the examples before you have received a key from Rhino, you can use the `authenticate` function from `services/authentication` to obtain a temporary api key and use that instead of the `RHINO_API_KEY` environment variable.
+The Rhino API requires authentication with a JSON Web Token (JWT) to access the bridge. Rhino will provide you an API key specific for your app upon request. This API key is then used to obtain a JWT to make authenticated API requests. You should always use this key in your production integration.  
+If you want to try out the examples before you have received a key from Rhino, you can replace usages of the `authenticateWithApiKey` with the `authenticateWithWallet` function from `services/authentication` to obtain a JWT like a Rhino webapp user. Please note that this should only be used for testing purposes and not be used in a production integration.  
+
+### Resources
+
+You can find more details on the Rhino API in our [documentation](https://docs.rhino.fi/api/introduction).
+
+If you use JavaScript/TypeScript for you integration, you might also want to use [our SDK](https://docs.rhino.fi/sdk/quickstart) which makes integrating Rhino even easier.

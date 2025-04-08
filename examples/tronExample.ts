@@ -4,6 +4,7 @@ import {getBridgeConfigs} from "../services/getConfigs";
 import {commitBridgeUserQuote} from "../services/commitBridgeUserQuote";
 import {getTronWallet} from "../helpers/tron/getTronWallet";
 import {callTronBridgeContract} from "./contracts/tronBridge";
+import { authenticateWithApiKey } from '../services/authentication';
 
 const {RECIPIENT, RHINO_API_KEY} = process.env
 
@@ -15,6 +16,8 @@ const token = 'USDT'
 const tronBridge = async () => {
   // Get the bridge configs - contains the chain and token information for the bridge
   const configs = await getBridgeConfigs()
+
+  const jwt = await authenticateWithApiKey(RHINO_API_KEY)
 
   const tronWeb = getTronWallet()
   const tronWalletAddress = tronWeb.defaultAddress.base58
@@ -32,12 +35,12 @@ const tronBridge = async () => {
     mode: 'receive',
     depositor: tronWalletAddress,
     recipient: RECIPIENT,
-  }, RHINO_API_KEY)
+  }, jwt)
 
   if (!quote?.quoteId) {
     throw new Error('Failed to generate user quote.')
   }
-  const commitResult = await commitBridgeUserQuote(quote.quoteId, RHINO_API_KEY)
+  const commitResult = await commitBridgeUserQuote(quote.quoteId, jwt)
 
   const chainConfig = configs[chainIn]
 
